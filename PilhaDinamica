@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+struct t_aluno
+{
+	int ra,faltas;
+	float nota1,nota2;
+};
+
+t_aluno recebe_dados() //insercao dos dados
+{
+	t_aluno a;
+	printf ("RA    :");
+	scanf ("%d",&a.ra);
+	printf ("NOTA1 :");
+	scanf ("%f",&a.nota1);
+	printf ("NOTA2 :");
+	scanf ("%f",&a.nota2);
+	printf ("FALTAS:");
+	scanf ("%d",&a.faltas);
+	return a;
+}
+
+typedef struct NO{
+	t_aluno dado;
+	struct NO *prox;
+}NO;
+
+typedef struct PILHA{
+	NO *topo;
+}PILHA;
+
+void inicializaPilha (PILHA *p){
+	p->topo = NULL;
+}
+
+void empilha (t_aluno dado, PILHA *p){
+	NO *ptr = (NO*) malloc(sizeof(NO));
+	if (ptr == NULL){
+		printf("Erro de alocação de nó");
+		return;
+	} else {
+		ptr->dado = dado;
+		ptr->prox = p->topo;
+		p->topo = ptr;
+	}
+}
+
+t_aluno desempilha (PILHA *p){
+	NO* ptr = p->topo;
+	t_aluno dado;
+	if( ptr == NULL){
+		printf("Pilha Vazia.\n");
+		return dado;
+	} else {
+		p->topo = ptr->prox;
+		ptr->prox = NULL;
+		dado = ptr->dado;
+		free(ptr);
+		return dado;
+	}
+	
+}
+
+void imprimePilha (PILHA *p){
+	NO *ptr = p->topo;
+	if( ptr == NULL){
+		printf("Pilha Vazia.\n");
+		return;
+	} else {
+		while( ptr != NULL){
+			printf("%d RA:", ptr->dado.ra);
+			printf("%d NOTA 1:", ptr->dado.nota1);
+			printf("%d NOTA 2:", ptr->dado.nota2);
+			printf("%d FALTAS:", ptr->dado.faltas);
+			printf("\n");
+			ptr = ptr->prox;
+		}
+		printf("\n");
+	}
+}
+
+int main()
+{
+	PILHA *p1 = (PILHA*) malloc(sizeof(PILHA));
+	char tecla;
+	t_aluno aluno;
+	inicializaPilha(p1);
+	
+	while (tecla!='S' && tecla!='s')
+	{
+	printf("[I]ncluir [L]istar [D]eletar [S]air\n");
+	  tecla=getch(); 
+	  if (tecla=='i' || tecla=='I')     
+	  {
+		aluno = recebe_dados();
+		empilha(aluno, p1);		
+	  } 
+	  else if (tecla=='l' || tecla=='L')
+	  {
+		imprimePilha(p1);
+	  } 
+	  else if (tecla=='d' || tecla=='D')
+	  {
+		desempilha(p1);
+	  }
+	  else if (tecla=='s' || tecla=='S')
+	  {
+	   printf("Saindo\n");
+	  } 
+	  else
+	  {
+		printf("Opcao invalida\n");
+	  }
+		
+	}
+	
+	return 0;
+}
